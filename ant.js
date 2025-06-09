@@ -33,21 +33,28 @@ class Ant {
   // Input: none
   // Output: none
   // Throws: none
-  move() {
+  move(canvas) {
     // move it based on the direction its facing
-    switch (this.direction) {
-      case 0:
-        this.x += 1;
-        break;
-      case 1:
-        this.y += 1;
-        break;
-      case 2:
-        this.x -= 1;
-        break;
-      case 3:
-        this.y -= 1;
-        break;
+    if (
+      this.x >= 0 &&
+      this.y >= 0 &&
+      this.x < canvas.pixels.length &&
+      this.y < canvas.pixels[0].length
+    ) {
+      switch (this.direction) {
+        case 0:
+          this.x += 1;
+          break;
+        case 1:
+          this.y += 1;
+          break;
+        case 2:
+          this.x -= 1;
+          break;
+        case 3:
+          this.y -= 1;
+          break;
+      }
     }
   }
 
@@ -114,21 +121,22 @@ class Canvas {
   }
 }
 
-const ant = new Ant(50, 50, 0);
+const ants = [];
+
+ants.push(new Ant(50, 50, 0), new Ant(60, 60, 0), new Ant(100, 30, 0));
 
 const canvasObject = document.getElementById("canvas");
 const canvas = new Canvas(1000, 1000, canvasObject);
 const simulationSpeed = 5;
 
-canvas.render();
-ant.render(canvas.canvasContext);
-
 // make a loop
 document.addEventListener("DOMContentLoaded", () => {
   canvas.render();
   setInterval(() => {
-    ant.checkUnder(canvas);
-    ant.move();
-    ant.render(canvas.canvasContext);
+    ants.forEach((ant) => {
+      ant.checkUnder(canvas);
+      ant.move(canvas);
+      ant.render(canvas.canvasContext);
+    });
   }, simulationSpeed);
 });
