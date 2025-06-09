@@ -11,6 +11,10 @@ function renderDot(canvasContext, x, y, color) {
   canvasContext.fillRect(x * 5, y * 5, 5, 5);
 }
 
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
 // Classname: Ant
 // Purpose: template for ants
 class Ant {
@@ -34,27 +38,33 @@ class Ant {
   // Output: none
   // Throws: none
   move(canvas) {
+    let newX = this.x;
+    let newY = this.y;
+
     // move it based on the direction its facing
+    switch (this.direction) {
+      case 0:
+        newX += 1;
+        break;
+      case 1:
+        newY += 1;
+        break;
+      case 2:
+        newX -= 1;
+        break;
+      case 3:
+        newY -= 1;
+        break;
+    }
+
     if (
-      this.x >= 0 &&
-      this.y >= 0 &&
-      this.x < canvas.pixels.length &&
-      this.y < canvas.pixels[0].length
+      newX >= 0 &&
+      newY >= 0 &&
+      newX < canvas.pixels.length &&
+      newY < canvas.pixels[0].length
     ) {
-      switch (this.direction) {
-        case 0:
-          this.x += 1;
-          break;
-        case 1:
-          this.y += 1;
-          break;
-        case 2:
-          this.x -= 1;
-          break;
-        case 3:
-          this.y -= 1;
-          break;
-      }
+      this.x = newX;
+      this.y = newY;
     }
   }
 
@@ -123,7 +133,9 @@ class Canvas {
 
 const ants = [];
 
-ants.push(new Ant(50, 50, 0), new Ant(60, 60, 0), new Ant(100, 30, 0));
+for (let i = 0; i < 70; i++) {
+  ants.push(new Ant(getRandomInt(1000), getRandomInt(1000), getRandomInt(4)));
+}
 
 const canvasObject = document.getElementById("canvas");
 const canvas = new Canvas(1000, 1000, canvasObject);
