@@ -133,7 +133,7 @@ class Canvas {
 
 const ants = [];
 
-for (let i = 0; i < 70; i++) {
+for (let i = 0; i < 120; i++) {
   ants.push(new Ant(getRandomInt(1000), getRandomInt(1000), getRandomInt(4)));
 }
 
