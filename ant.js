@@ -19,10 +19,12 @@ function getRandomInt(max) {
 // Purpose: template for ants
 class Ant {
   // Constructor
-  constructor(x, y, direction) {
+  constructor(x, y, direction, trail_color) {
     this.x = x;
     this.y = y;
     this.direction = direction; // 1 through 4 counter clockwise
+    this.trail_color = trail_color;
+    this.lives = 5;
   }
 
   // Function name: render
@@ -85,14 +87,25 @@ class Ant {
   // Function name: checkUnder
   // Purpose: checks underneath the ant at whichever pixel it is at
   checkUnder(canvas) {
+    let currentPixel = canvas.pixels[this.x][this.y];
     // checks the canvas pixel of the ant and returns the rgb value
-    if (canvas.pixels[this.x][this.y] == "black") {
+    if (currentPixel != "white") {
       this.turnLeft();
+      if (currentPixel === this.trail_color) {
+        this.lives += 1;
+        if (this.lives >= 2) {
+          this.lives = 2;
+        }
+      } else {
+        this.lives -= 1;
+      }
+
       canvas.pixels[this.x][this.y] = "white";
     } else {
       this.turnRight();
-      canvas.pixels[this.x][this.y] = "black";
+      canvas.pixels[this.x][this.y] = this.trail_color;
     }
+
     renderDot(
       canvas.canvasContext,
       this.x,
@@ -134,21 +147,42 @@ class Canvas {
 const ants = [];
 
 for (let i = 0; i < 120; i++) {
-  ants.push(new Ant(getRandomInt(1000), getRandomInt(1000), getRandomInt(4)));
+  let color_picker = getRandomInt(3);
+  let new_color = "black";
+  switch (color_picker) {
+    case 0:
+      new_color = "blue";
+      break;
+    case 1:
+      new_color = "green";
+      break;
+    case 2:
+      new_color = "purple";
+      break;
+    case 3:
+      new_color = "orange";
+      break;
+  }
+
+  ants.push(
+    new Ant(getRandomInt(1000), getRandomInt(1000), getRandomInt(4), new_color)
+  );
 }
 
 const canvasObject = document.getElementById("canvas");
 const canvas = new Canvas(1000, 1000, canvasObject);
-const simulationSpeed = 5;
+const simulationSpeed = 1;
 
 // make a loop
 document.addEventListener("DOMContentLoaded", () => {
   canvas.render();
   setInterval(() => {
     ants.forEach((ant) => {
-      ant.checkUnder(canvas);
-      ant.move(canvas);
-      ant.render(canvas.canvasContext);
+      if (ant.lives > 0) {
+        ant.checkUnder(canvas);
+        ant.move(canvas);
+        ant.render(canvas.canvasContext);
+      }
     });
   }, simulationSpeed);
 });
