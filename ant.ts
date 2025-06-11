@@ -24,22 +24,29 @@ function getRandomInt(max: number) {
   return Math.floor(Math.random() * max);
 }
 
+enum Direction {
+  Right = 0,
+  Down = 1,
+  Left = 2,
+  Up = 3,
+}
+
 // Classname: Ant
 // Purpose: template for ants
 class Ant {
   x: number;
   y: number;
-  direction: number;
+  direction: Direction;
   trail_color: string;
   lives: number;
 
   // Constructor
-  constructor(x: number, y: number, direction: number, trail_color: string) {
+  constructor(x: number, y: number, direction: Direction, trail_color: string) {
     this.x = x;
     this.y = y;
     this.direction = direction; // 1 through 4 counter clockwise
     this.trail_color = trail_color;
-    this.lives = 5;
+    this.lives = 100;
   }
 
   // Function name: render
@@ -60,16 +67,16 @@ class Ant {
 
     // move it based on the direction its facing
     switch (this.direction) {
-      case 0:
+      case Direction.Right:
         newX += 1;
         break;
-      case 1:
+      case Direction.Down:
         newY += 1;
         break;
-      case 2:
+      case Direction.Left:
         newX -= 1;
         break;
-      case 3:
+      case Direction.Up:
         newY -= 1;
         break;
     }
@@ -88,15 +95,13 @@ class Ant {
   // Function name: turnLeft
   // Purpose: turns the ant left
   turnLeft() {
-    this.direction += 1;
-    if (this.direction > 3) this.direction = 0;
+    this.direction = (this.direction + 1) % 4; // makes it loop
   }
 
   // Function name: turnRight
   // Purpose: turns the ant right
   turnRight() {
-    this.direction -= 1;
-    if (this.direction < 0) this.direction = 3;
+    this.direction = (this.direction + 3) % 4; // makes it loop
   }
 
   // Function name: checkUnder
@@ -108,8 +113,8 @@ class Ant {
       this.turnLeft();
       if (currentPixel === this.trail_color) {
         this.lives += 1;
-        if (this.lives >= 2) {
-          this.lives = 2;
+        if (this.lives >= 100) {
+          this.lives = 100;
         }
       } else {
         this.lives -= 1;
